@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Sharpreads.Data;
 using Sharpreads.Models;
@@ -157,7 +155,12 @@ namespace Sharpreads.Controllers
 
         public async Task<IActionResult> ShowSearchResults(String SearchPhrase)
         {
-            return View();
+            return View("Index", await _context.Book.Where
+                (
+                    book => book.Title.ToLower().Contains(SearchPhrase.ToLower())
+                    || book.Author.ToLower().Contains(SearchPhrase.ToLower()))
+                    .ToListAsync()
+                );
         }
     }
 }
