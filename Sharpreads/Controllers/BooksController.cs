@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Sharpreads.Data;
@@ -42,6 +43,7 @@ namespace Sharpreads.Controllers
         }
 
         // GET: Books/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -50,6 +52,7 @@ namespace Sharpreads.Controllers
         // POST: Books/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Author,Summary,Rating,Created,CoverURL")] Book book)
@@ -64,6 +67,7 @@ namespace Sharpreads.Controllers
         }
 
         // GET: Books/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -82,6 +86,7 @@ namespace Sharpreads.Controllers
         // POST: Books/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Author,Summary,Rating,Created,CoverURL")] Book book)
@@ -115,6 +120,7 @@ namespace Sharpreads.Controllers
         }
 
         // GET: Books/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -135,6 +141,7 @@ namespace Sharpreads.Controllers
         // POST: Books/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var book = await _context.Book.FindAsync(id);
@@ -156,11 +163,11 @@ namespace Sharpreads.Controllers
         public async Task<IActionResult> ShowSearchResults(String SearchPhrase)
         {
             return View("Index", await _context.Book.Where
-                (
-                    book => book.Title.ToLower().Contains(SearchPhrase.ToLower())
+            (
+                book => book.Title.ToLower().Contains(SearchPhrase.ToLower())
                     || book.Author.ToLower().Contains(SearchPhrase.ToLower()))
-                    .ToListAsync()
-                );
+                .ToListAsync()
+            );
         }
     }
 }
